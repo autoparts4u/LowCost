@@ -101,12 +101,12 @@ export const Table = () => {
               <div className='categories' style={{display: showFiltersCheckbox ? "block" : "none"}}>
                 {categories.map((category) => 
                   <label className='categoryLabel'>
-                  <input className="messageCheckbox" 
-                    type="checkbox" 
-                    value={category} 
-                    name="categories" 
-                    onChange={categoriesChangeHandle}/>
-                    {category} <br/>
+                    <input className="messageCheckbox" 
+                      type="checkbox" 
+                      value={category} 
+                      name="categories" 
+                      onChange={categoriesChangeHandle}/>
+                      {category} <br/>
                   </label> 
                 )}
               </div>

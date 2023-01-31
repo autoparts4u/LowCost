@@ -1,0 +1,75 @@
+table tr td{
+    border: 1px solid;
+}
+
+.table {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    z-index: 1;
+  }
+  
+  .table td, .table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .table tr:nth-child(even){background-color: #f2f2f2;}
+  
+  .table tr:hover {background-color: #ddd;}
+  
+  .table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
+  }
+
+.categories {
+    padding: 15px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 2;
+    background-color: white;
+    box-shadow: 0px 1px 2px 2px rgb(94, 93, 93);
+    width: max-content;
+}
+
+.section {
+ display: flex;
+ padding: 20px 20px;
+}
+
+.infoBlock {
+  /* padding: 40px 20px; */
+  display: flex;
+  gap: 40px
+}
+
+.searchInput {
+  height: 30px;
+  border: #2c0cbc solid;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  padding-bottom: 0px;
+}
+
+.categoriesButton {
+  height: 35px;
+}
+
+.categoryLabel:hover {
+  cursor: pointer;
+  background-color: #f8f7a4;
+  /* border-radius: 6px; */
+
+}

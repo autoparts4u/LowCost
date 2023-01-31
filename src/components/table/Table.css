@@ -43,6 +43,7 @@ table tr td{
 .section {
  display: flex;
  padding: 20px 20px;
+ padding-top: 10px;
 }
 
 .infoBlock {
@@ -59,17 +60,19 @@ table tr td{
 .header {
   display: flex;
   justify-content: space-between;
+  top: 0px;
   padding: 20px;
-  padding-bottom: 0px;
+  padding-bottom: 10px;
+  position: sticky;
+  background-color: white;
+  z-index: 2;
 }
 
 .categoriesButton {
-  height: 35px;
+  height: 38px;
 }
 
 .categoryLabel:hover {
   cursor: pointer;
   background-color: #f8f7a4;
-  /* border-radius: 6px; */
-
 }

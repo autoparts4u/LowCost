@@ -49,7 +49,7 @@ export const Table = () => {
 
   const searchTextInObject = (text: string, item: ApiData): boolean => {
     for (let value of Object.values(item)) {
-      if (value.includes(text)) {
+      if (value.toLowerCase().includes(text.toLowerCase())) {
         return true;
       }
     }

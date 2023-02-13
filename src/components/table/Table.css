@@ -72,7 +72,17 @@ table tr td{
   height: 38px;
 }
 
+.salesButton {
+  margin-left: 15px;
+  height: 30px;
+}
+
 .categoryLabel:hover {
   cursor: pointer;
   background-color: #f8f7a4;
+}
+
+.saleSuccess {
+  background-color: #04AA6D;
+  color: white;
 }

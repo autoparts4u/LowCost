@@ -16,12 +16,25 @@ export const Table = () => {
     "sale": string
   }
 
+  interface BankData {
+    Cur_ID: number,
+    Date: string,
+    Cur_Abbreviation: string,
+    Cur_Scale: number,
+    Cur_Name: string,
+    Cur_OfficialRate: number
+  }
+
   const [data, setData] = useState<Array<ApiData>>()
   const [filteredData, setFilteredData] = useState<Array<ApiData>>()
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>([])
   const [categories, setCategories] = useState<Array<string>>([])
   const [showFiltersCheckbox, setShowFiltersCheckbox] = useState<boolean>(false)
+  const [sale, setSale] = useState<boolean>(false)
+  const [markdown, setMarkdown] = useState<boolean>(false)
+  const [currency, setCurrency] = useState<BankData>()
   
+  type StockOption = "акция" | "уценка";
 
   const loadDataFromSheet = async (URL: string) => {
     const dataUrl = await fetch(URL);
@@ -35,6 +48,9 @@ export const Table = () => {
   const categoriesChangeHandle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const category = event.target.value;
 
+    setSale(false);
+    setMarkdown(false);
+
     event.target.checked ? selectedCategories.push(category) : selectedCategories.splice(selectedCategories.indexOf(category), 1)
 
     selectedCategories.length === 0 ? setFilteredData(data)
@@ -44,8 +60,10 @@ export const Table = () => {
   const searchHandle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const text = event.target.value;
 
-    setFilteredData(data?.filter((item) => searchTextInObject(text, item)))
+    setFilteredData(filteredData?.filter((item) => searchTextInObject(text, item)))
   }
+
+
 
 
   const searchTextInObject = (text: string, item: ApiData): boolean => {
@@ -85,11 +103,38 @@ export const Table = () => {
         setShowFiltersCheckbox(false)
       }
     }
-    
+  }
+
+  const onStockHandle = (stockOption: StockOption) => {
+    let newStockValue;
+
+    if (stockOption === "акция") { 
+      newStockValue = !sale;
+      setSale(!sale)
+      setMarkdown(false)
+    } else {
+      newStockValue = !markdown;
+      setMarkdown(!markdown)
+      setSale(false)
+    }
+
+    selectedCategories.length === 0 
+          ? newStockValue 
+            ? setFilteredData(data?.filter((item) => searchTextInObject(stockOption, item)))
+            : setFilteredData(data)
+          : newStockValue 
+            ? setFilteredData(data?.filter((item) => selectedCategories.includes(item.category)))
+            : setFilteredData(data?.filter((item) => selectedCategories.includes(item.category) && searchTextInObject(stockOption, item)))
+  }
+
+  const loadCurrencyFromBank = async () => {
+    const data = await fetch("https://www.nbrb.by/api/exrates/rates/431");
+    setCurrency(await data.json())
   }
 
   useEffect(() => {
     loadDataFromSheet(URL)
+    loadCurrencyFromBank()
   }, [])
 
   return (
@@ -100,6 +145,12 @@ export const Table = () => {
             <div>
               <button className='categoriesButton' onClick={() => setShowFiltersCheckbox(!showFiltersCheckbox)}>
                 {showFiltersCheckbox ? 'CLOSE' : 'FILTER'}
+              </button>
+              <button className={`salesButton ${sale && 'saleSuccess'}`} onClick={() => onStockHandle("акция")}>
+                Акции
+              </button>
+              <button className={`salesButton ${markdown && 'saleSuccess'}`} onClick={() => onStockHandle("уценка")}>
+                Уценка
               </button>
               <div className='categories' style={{display: showFiltersCheckbox ? "block" : "none"}}>
                 {categories.map((category) => 
@@ -116,7 +167,7 @@ export const Table = () => {
             </div>
             
         </div>
-        {/* <span style={{fontSize: "40px"}}>AutoParts</span> */}
+        {currency && (currency.Cur_OfficialRate + 0.01).toFixed(2)}
       </div>
       <div className='section'>
         <table className='table'>
@@ -125,7 +176,6 @@ export const Table = () => {
             <th>описание</th>
             <th>кол-во</th>
             <th>ц</th>
-            {/* <th>аналоги</th> */}
           </tr>
           {filteredData?.map((item) => 
           <tr>
@@ -133,7 +183,6 @@ export const Table = () => {
             <td>{item["описание"]}</td>
             <td>{item["кол-во"]}</td>
             <td>{item["ц"]}</td>
-            {/* <td>{item["аналоги"]}</td> */}
           </tr>
           )}  
         </table>

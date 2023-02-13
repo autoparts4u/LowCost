@@ -13,6 +13,7 @@ export const Table = () => {
     "кол-во": string
     "ц": string
     "аналоги": string
+    "sale": string
   }
 
   const [data, setData] = useState<Array<ApiData>>()

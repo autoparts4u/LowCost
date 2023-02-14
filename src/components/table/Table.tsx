@@ -60,11 +60,9 @@ export const Table = () => {
   const searchHandle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const text = event.target.value;
 
-    setFilteredData(filteredData?.filter((item) => searchTextInObject(text, item)))
+    selectedCategories.length === 0 ? setFilteredData(data?.filter((item) => searchTextInObject(text, item)))
+    : setFilteredData(data?.filter((item) => searchTextInObject(text, item) && selectedCategories.includes(item.category)))
   }
-
-
-
 
   const searchTextInObject = (text: string, item: ApiData): boolean => {
     for (let value of Object.values(item)) {

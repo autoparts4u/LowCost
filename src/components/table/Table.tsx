@@ -107,19 +107,19 @@ export const Table = () => {
     let newStockValue;
 
     if (stockOption === "акция") { 
-      newStockValue = !sale;
       setSale(!sale)
+      newStockValue = sale;
       setMarkdown(false)
     } else {
-      newStockValue = !markdown;
       setMarkdown(!markdown)
+      newStockValue = markdown;
       setSale(false)
     }
 
     selectedCategories.length === 0 
           ? newStockValue 
-            ? setFilteredData(data?.filter((item) => searchTextInObject(stockOption, item)))
-            : setFilteredData(data)
+            ? setFilteredData(data)
+            : setFilteredData(data?.filter((item) => searchTextInObject(stockOption, item)))
           : newStockValue 
             ? setFilteredData(data?.filter((item) => selectedCategories.includes(item.category)))
             : setFilteredData(data?.filter((item) => selectedCategories.includes(item.category) && searchTextInObject(stockOption, item)))
@@ -141,7 +141,10 @@ export const Table = () => {
         <div className='infoBlock'>
             <input className='searchInput' onChange={searchHandle}  placeholder="Search..."/>
             <div>
-              <button className='categoriesButton' onClick={() => setShowFiltersCheckbox(!showFiltersCheckbox)}>
+              <button 
+                className='categoriesButton' 
+                onClick={() => setShowFiltersCheckbox(!showFiltersCheckbox)} 
+                style={{backgroundColor: selectedCategories.length !== 0 ? "yellow" : "white"}}>
                 {showFiltersCheckbox ? 'CLOSE' : 'FILTER'}
               </button>
               <button className={`salesButton ${sale && 'saleSuccess'}`} onClick={() => onStockHandle("акция")}>

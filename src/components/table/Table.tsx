@@ -130,6 +130,16 @@ export const Table = () => {
     setCurrency(await data.json())
   }
 
+  const getRublePrice = (price: string): number => {
+    price = price.replace(',', '.')
+    
+    if (!isNaN(+price) && currency) {
+      return (+price) * (currency.Cur_OfficialRate + 0.01)
+    }
+
+    return 0
+  }
+
   useEffect(() => {
     loadDataFromSheet(URL)
     loadCurrencyFromBank()
@@ -183,7 +193,7 @@ export const Table = () => {
             <td>{item["артикул"]}</td>
             <td>{item["описание"]}</td>
             <td>{item["кол-во"]}</td>
-            <td>{item["ц"]}</td>
+            <td>{item["ц"]} {item["ц"] && <span className='rublePrice'>/ {getRublePrice(item["ц"]).toFixed(1)}</span>}</td>
           </tr>
           )}  
         </table>

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import csvToJson from 'csvtojson'
 import './Table.css'
+import Marquee from 'react-fast-marquee';
 
 const URL = 'https://docs.google.com/spreadsheets/d/e/' + process.env.REACT_APP_SHEET_ID + '/pub?output=csv';
 
 export const Table = () => {
-  
+
   interface ApiData {
     "артикул": string
     "описание": string
@@ -14,6 +15,11 @@ export const Table = () => {
     "ц": string
     "аналоги": string
     "sale": string
+  }
+
+  interface ApiAdditioanlData {
+    courses: string
+    text: string
   }
 
   interface BankData {
@@ -33,16 +39,23 @@ export const Table = () => {
   const [sale, setSale] = useState<boolean>(false)
   const [markdown, setMarkdown] = useState<boolean>(false)
   const [currency, setCurrency] = useState<BankData>()
-  
+  const [courses, setCourses] = useState<string>()
+  const [adText, setAdText] = useState<string>()
+
   type StockOption = "акция" | "уценка";
 
   const loadDataFromSheet = async (URL: string) => {
     const dataUrl = await fetch(URL);
-    const res =  await dataUrl.text()
+    const res = await dataUrl.text()
     const json: Array<ApiData> = await csvToJson().fromString(res)
+
     setData(json)
     setFilteredData(json)
     setCategories(getAllCategories(json))
+
+    const additionalJson: Array<ApiAdditioanlData> = await csvToJson().fromString(res)
+    setCourses(additionalJson[0].courses)
+    setAdText(additionalJson[0].text)
   }
 
   const categoriesChangeHandle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,14 +67,14 @@ export const Table = () => {
     event.target.checked ? selectedCategories.push(category) : selectedCategories.splice(selectedCategories.indexOf(category), 1)
 
     selectedCategories.length === 0 ? setFilteredData(data)
-    : setFilteredData(data?.filter((item) => selectedCategories.includes(item.category)))
-  } 
+      : setFilteredData(data?.filter((item) => selectedCategories.includes(item.category)))
+  }
 
   const searchHandle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const text = event.target.value;
 
     selectedCategories.length === 0 ? setFilteredData(data?.filter((item) => searchTextInObject(text, item)))
-    : setFilteredData(data?.filter((item) => searchTextInObject(text, item) && selectedCategories.includes(item.category)))
+      : setFilteredData(data?.filter((item) => searchTextInObject(text, item) && selectedCategories.includes(item.category)))
   }
 
   const searchTextInObject = (text: string, item: ApiData): boolean => {
@@ -81,11 +94,11 @@ export const Table = () => {
 
     data.forEach((item) => {
       const itemCategory = item.category;
-      if(!allCategories.includes(itemCategory) && itemCategory.length !== 0) {
+      if (!allCategories.includes(itemCategory) && itemCategory.length !== 0) {
         allCategories.push(itemCategory)
       }
     })
-   
+
     return allCategories
   }
 
@@ -106,7 +119,7 @@ export const Table = () => {
   const onStockHandle = (stockOption: StockOption) => {
     let newStockValue;
 
-    if (stockOption === "акция") { 
+    if (stockOption === "акция") {
       setSale(!sale)
       newStockValue = sale;
       setMarkdown(false)
@@ -116,13 +129,13 @@ export const Table = () => {
       setSale(false)
     }
 
-    selectedCategories.length === 0 
-          ? newStockValue 
-            ? setFilteredData(data)
-            : setFilteredData(data?.filter((item) => searchTextInObject(stockOption, item)))
-          : newStockValue 
-            ? setFilteredData(data?.filter((item) => selectedCategories.includes(item.category)))
-            : setFilteredData(data?.filter((item) => selectedCategories.includes(item.category) && searchTextInObject(stockOption, item)))
+    selectedCategories.length === 0
+      ? newStockValue
+        ? setFilteredData(data)
+        : setFilteredData(data?.filter((item) => searchTextInObject(stockOption, item)))
+      : newStockValue
+        ? setFilteredData(data?.filter((item) => selectedCategories.includes(item.category)))
+        : setFilteredData(data?.filter((item) => selectedCategories.includes(item.category) && searchTextInObject(stockOption, item)))
   }
 
   const loadCurrencyFromBank = async () => {
@@ -132,9 +145,9 @@ export const Table = () => {
 
   const getRublePrice = (price: string): number => {
     price = price.replace(',', '.')
-    
+
     if (!isNaN(+price) && currency) {
-      return (+price) * (currency.Cur_OfficialRate + 0.01)
+      return (+price) * (currency.Cur_OfficialRate + +courses!)
     }
 
     return 0
@@ -149,36 +162,39 @@ export const Table = () => {
     <section onClick={(event) => pageHandler(event)}>
       <div className='header'>
         <div className='infoBlock'>
-            <input className='searchInput' onChange={searchHandle}  placeholder="Search..."/>
-            <div>
-              <button 
-                className='categoriesButton' 
-                onClick={() => setShowFiltersCheckbox(!showFiltersCheckbox)} 
-                style={{backgroundColor: selectedCategories.length !== 0 ? "yellow" : "white"}}>
-                {showFiltersCheckbox ? 'CLOSE' : 'FILTER'}
-              </button>
-              <button className={`salesButton ${sale && 'saleSuccess'}`} onClick={() => onStockHandle("акция")}>
-                Акции
-              </button>
-              <button className={`salesButton ${markdown && 'saleSuccess'}`} onClick={() => onStockHandle("уценка")}>
-                Уценка
-              </button>
-              <div className='categories' style={{display: showFiltersCheckbox ? "block" : "none"}}>
-                {categories.map((category) => 
-                  <label className='categoryLabel'>
-                    <input className="messageCheckbox" 
-                      type="checkbox" 
-                      value={category} 
-                      name="categories" 
-                      onChange={categoriesChangeHandle}/>
-                      {category} <br/>
-                  </label> 
-                )}
-              </div>
+          <input className='searchInput' onChange={searchHandle} placeholder="Search..." />
+          <div>
+            <button
+              className='categoriesButton'
+              onClick={() => setShowFiltersCheckbox(!showFiltersCheckbox)}
+              style={{ backgroundColor: selectedCategories.length !== 0 ? "yellow" : "white" }}>
+              {showFiltersCheckbox ? 'CLOSE' : 'FILTER'}
+            </button>
+            <button className={`salesButton ${sale && 'saleSuccess'}`} onClick={() => onStockHandle("акция")}>
+              Акции
+            </button>
+            <button className={`salesButton ${markdown && 'saleSuccess'}`} onClick={() => onStockHandle("уценка")}>
+              Уценка
+            </button>
+            <div className='categories' style={{ display: showFiltersCheckbox ? "block" : "none" }}>
+              {categories.map((category) =>
+                <label className='categoryLabel'>
+                  <input className="messageCheckbox"
+                    type="checkbox"
+                    value={category}
+                    name="categories"
+                    onChange={categoriesChangeHandle} />
+                  {category} <br />
+                </label>
+              )}
             </div>
-            
+          </div>
+
         </div>
-        {currency && (currency.Cur_OfficialRate + 0.01).toFixed(2)}
+        <button onClick={() => {alert('Вы можете запросить цену на интересующий вас товар,\nдоставка 3-15 дней')}}>Заказать</button>
+        <span>
+          {currency && (currency.Cur_OfficialRate + +courses!).toFixed(2)}  
+        </span>
       </div>
       <div className='section'>
         <table className='table'>
@@ -188,15 +204,21 @@ export const Table = () => {
             <th>кол-во</th>
             <th>ц</th>
           </tr>
-          {filteredData?.map((item) => 
-          <tr>
-            <td>{item["артикул"]}</td>
-            <td>{item["описание"]}</td>
-            <td>{item["кол-во"]}</td>
-            <td>{item["ц"]} {item["ц"] && <span className='rublePrice'>/ {getRublePrice(item["ц"]).toFixed(1)}</span>}</td>
-          </tr>
-          )}  
+          {filteredData?.map((item) =>
+            <tr>
+              <td>{item["артикул"]}</td>
+              <td>{item["описание"]}</td>
+              <td>{item["кол-во"]}</td>
+              <td>{item["ц"]} {item["ц"] && <span className='rublePrice'>/ {getRublePrice(item["ц"]).toFixed(1)}</span>}</td>
+            </tr>
+          )}
         </table>
+      </div>
+
+      <div className='marquee'>
+        <Marquee speed={60} pauseOnHover={true}>
+          {adText}
+        </Marquee>
       </div>
     </section>
   )

@@ -91,3 +91,12 @@ table tr td{
   color: gray;
   font-size: 14.5px;
 }
+
+.marquee {
+  position: sticky;
+  left: 0;
+  bottom: 0;
+  z-index: 4;
+  background-color: white;
+  padding: 3px 0;
+}

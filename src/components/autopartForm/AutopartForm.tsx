@@ -33,7 +33,13 @@ export const AutopartForm = ({ show, className, onClose }: AutopartFormProps) =>
       return
     }
 
-    const message = `${articleText}%0A${brandText}%0A${countText}%0A${refText}%0A${contactText}%0A${getContactMessanger()}`
+    const contacts = getContactMessanger();
+    if (contacts.length === 0) {
+      alert('Выберете в форме способ обратной связи ( WhatsApp / Telegram / viber ) ')
+      return
+    }
+
+    const message = `${articleText}%0A${brandText}%0A${countText}%0A${refText}%0A${contactText}%0A${contacts}`
 
     const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${message}`
 
@@ -67,7 +73,7 @@ export const AutopartForm = ({ show, className, onClose }: AutopartFormProps) =>
 
   const onCloseHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    
+
     onClose()
   }
 

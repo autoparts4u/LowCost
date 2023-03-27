@@ -155,6 +155,11 @@ export const Table = () => {
     return 0
   }
 
+  const onOrderHandler = () => {
+    setShowProductForm(!showProductForm)
+    alert('Вы можете запросить цену на интересующий вас товар,\nдоставка 2-14 дней, после согласования цены.')
+  }
+
   useEffect(() => {
     loadDataFromSheet(URL)
     loadCurrencyFromBank()
@@ -193,7 +198,7 @@ export const Table = () => {
           </div>
         </div>
         <AutopartForm show={showProductForm} className='autoPartForm' onClose={() => setShowProductForm(false)}/>
-        <button className='orderButton' onClick={() => setShowProductForm(!showProductForm)}>Заказать</button>
+        <button className='orderButton' onClick={onOrderHandler}>Заказать</button>
         <span>
           {currency && (currency.Cur_OfficialRate + +courses!).toFixed(2)}
         </span>

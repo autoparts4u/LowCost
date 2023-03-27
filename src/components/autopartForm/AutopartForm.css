@@ -54,3 +54,8 @@ span {
 .buttons > button {
     font-size: large;
 }
+
+.contactSection {
+    display: flex;
+    gap: 15px;
+}

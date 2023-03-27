@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes } from 'react'
+import React, { ButtonHTMLAttributes, useEffect } from 'react'
 import './AutopartForm.css'
 
 export interface AutopartFormProps {
@@ -14,6 +14,8 @@ export const AutopartForm = ({ show, className, onClose }: AutopartFormProps) =>
 
   const onSubmitHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
+
+
     const articleInput = document.getElementById("autopartArticle") as HTMLInputElement
     const brandInput = document.getElementById("autopartBrand") as HTMLInputElement
     const countInput = document.getElementById("autopartCount") as HTMLInputElement
@@ -26,7 +28,12 @@ export const AutopartForm = ({ show, className, onClose }: AutopartFormProps) =>
     const refText = refInput.value
     const contactText = contactInput.value;
 
-    const message = `${articleText}%0A${brandText}%0A${countText}%0A${refText}%0A${contactText}`
+    if (contactText === '') {
+      alert('Введите контакты')
+      return
+    }
+
+    const message = `${articleText}%0A${brandText}%0A${countText}%0A${refText}%0A${contactText}%0A${getContactMessanger()}`
 
     const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${message}`
 
@@ -42,11 +49,25 @@ export const AutopartForm = ({ show, className, onClose }: AutopartFormProps) =>
     brandInput.value = ''
     countInput.value = ''
     refInput.value = ''
+
+  }
+
+  const getContactMessanger = (): Array<string> => {
+    const constacts: Array<HTMLInputElement> = Array.from(document.querySelectorAll('input[name="categories"]'))
+    const res = []
+
+    for (let contact of constacts) {
+      if (contact.checked) {
+        res.push(contact.value)
+      }
+    }
+
+    return res
   }
 
   const onCloseHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
-
+    
     onClose()
   }
 
@@ -70,14 +91,38 @@ export const AutopartForm = ({ show, className, onClose }: AutopartFormProps) =>
             Ссылка: <input id="autopartRef"></input>
           </label>
           <label>
-            Контакт для получения ответа: <input type="tel" id="autopartContact" pattern="[0-9]{11}" /> WhatsApp/Telegram/viber
+            Контакт для получения ответа: <input type="tel" id="autopartContact" pattern="[0-9]{11}" />
           </label>
+          <div className='contactSection'>
+            <label className='categoryLabel'>
+              <input className="messageCheckbox"
+                type="checkbox"
+                value={'whatsApp'}
+                name="categories" />
+              WhatsApp <br />
+            </label>
+            <label className='categoryLabel'>
+              <input className="messageCheckbox"
+                type="checkbox"
+                value={'telegram'}
+                name="categories" />
+              Telegram <br />
+            </label>
+            <label className='categoryLabel'>
+              <input className="messageCheckbox"
+                type="checkbox"
+                value={'viber'}
+                name="categories" />
+              viber <br />
+            </label>
+          </div>
+
         </div>
         <div className='buttons'>
           <button type="submit" onClick={onSubmitHandler}>Отправить на обработку</button>
           <button type="submit" onClick={onCloseHandler}>Закрыть</button>
         </div>
-        
+        <p>&#x26A1; Заказать товар можно только после согласования цены !!!</p>
       </form>
     </div>
 

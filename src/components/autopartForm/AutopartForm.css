@@ -1,0 +1,56 @@
+form {
+    border: 2px solid;
+    width: 800px;
+    border-radius: 15px;
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: white;
+    padding: 0 50px 20px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.blackBg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: black;
+    opacity: 0.5;
+}
+
+.infoInput {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+h1 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+span {
+    color: rgb(20, 130, 42);
+    font-weight: 500;
+    font-size: 18px;
+    transform: translateY(-5px);
+    
+}
+
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons > button {
+    font-size: large;
+}

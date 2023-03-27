@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import csvToJson from 'csvtojson'
 import './Table.css'
 import Marquee from 'react-fast-marquee';
+import { AutopartForm } from '../autopartForm/AutopartForm';
 
 const URL = 'https://docs.google.com/spreadsheets/d/e/' + process.env.REACT_APP_SHEET_ID + '/pub?output=csv';
 
@@ -41,6 +42,7 @@ export const Table = () => {
   const [currency, setCurrency] = useState<BankData>()
   const [courses, setCourses] = useState<string>()
   const [adText, setAdText] = useState<string>()
+  const [showProductForm, setShowProductForm] = useState<boolean>(false)
 
   type StockOption = "акция" | "уценка";
 
@@ -189,11 +191,11 @@ export const Table = () => {
               )}
             </div>
           </div>
-
         </div>
-        <button onClick={() => {alert('Вы можете запросить цену на интересующий вас товар,\nдоставка 3-15 дней')}}>Заказать</button>
+        <AutopartForm show={showProductForm} className='autoPartForm' onClose={() => setShowProductForm(false)}/>
+        <button className='orderButton' onClick={() => setShowProductForm(!showProductForm)}>Заказать</button>
         <span>
-          {currency && (currency.Cur_OfficialRate + +courses!).toFixed(2)}  
+          {currency && (currency.Cur_OfficialRate + +courses!).toFixed(2)}
         </span>
       </div>
       <div className='section'>

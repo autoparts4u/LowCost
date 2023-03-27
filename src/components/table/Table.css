@@ -70,11 +70,13 @@ table tr td{
 
 .categoriesButton {
   height: 38px;
+  cursor: pointer;
 }
 
 .salesButton {
   margin-left: 15px;
   height: 30px;
+  cursor: pointer;
 }
 
 .categoryLabel:hover {
@@ -99,4 +101,13 @@ table tr td{
   z-index: 4;
   background-color: white;
   padding: 3px 0;
+}
+
+.orderButton {
+  background: linear-gradient(135deg, rgb(171, 224, 171), rgb(98, 234, 188));
+  color: balck;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
 }

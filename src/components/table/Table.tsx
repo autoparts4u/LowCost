@@ -163,6 +163,9 @@ export const Table = () => {
   useEffect(() => {
     loadDataFromSheet(URL)
     loadCurrencyFromBank()
+    setTimeout(() => {
+      window.location.reload();
+    }, 1800000)
   }, [])
 
   return (

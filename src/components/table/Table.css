@@ -45,6 +45,12 @@ table tr td{
   display: flex;
   flex-direction: column;
   flex: 1;
+  border-radius: 10px;
+  padding: 5px
+}
+
+.categories:last-child {
+ background-color: rgb(227, 227, 227);
 }
 
 .section {
